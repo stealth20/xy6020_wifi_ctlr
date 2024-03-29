@@ -1,0 +1,2 @@
+css-html-js-minify==2.5.5
+htmlmin==0.1.12

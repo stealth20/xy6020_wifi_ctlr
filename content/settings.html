@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script type="text/javascript" src="logic.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <title>XY6020 Settings</title>
+</head>
+
+<body onload="getConfig()">
+    <center>
+        <h1 style="font-size: 50px; color: gray">XY6020 Settings</h1>
+
+        <div id="settings-page">
+            <div class="my-container">
+                <span>WiFi</span>
+                <table class="my-param-table">
+                    <tr>
+                        <td><span class="my-label">SSID:</span></td>
+                        <td style="width: 70%"><input type="text" class="my-input" name="ssid" placeholder="SSID"></td>
+                    </tr>
+                    <tr>
+                        <td><span class="my-label">Password:</span></td>
+                        <td><input type="password" class="my-input" name="wifi-pass"></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="my-container">
+            <span>DHCP</span>
+            <table class="my-param-table">
+                <tr>
+                    <td><span class="my-label">Use static ip address</span></td>
+                    <td style="width: 70%"><input type="checkbox" id="use-static-ip" name="use-static-ip"
+                            class="switch" /></td>
+                </tr>
+                <tr>
+                    <td><span class="my-label">IP address:</span></td>
+                    <td><input type="text" class="my-input" name="static-ip"></td>
+                </tr>
+                <tr>
+                    <td><span class="my-label">Subnet mask:</span></td>
+                    <td><input type="text" class="my-input" name="subnet"></td>
+                </tr>
+                <tr>
+                    <td><span class="my-label">Gateway:</span></td>
+                    <td><input type="text" class="my-input" name="gateway"></td>
+                </tr>
+            </table>
+        </div>
+        <div class="my-container">
+            <span>MQTT</span>
+            <table class="my-param-table">
+                <tr>
+                    <td><span class="my-label">Server ip:</span></td>
+                    <td style="width: 70%"><input type="text" class="my-input" name="mqtt-server"></td>
+                </tr>
+                <tr>
+                    <td><span class="my-label">Server port:</span></td>
+                    <td><input type="text" class="my-input" name="mqtt-port"></td>
+                </tr>
+                <tr>
+                    <td><span class="my-label">User:</span></td>
+                    <td><input type="text" class="my-input" name="mqtt-user" placeholder="user"></td>
+                </tr>
+                <tr>
+                    <td><span class="my-label">Password:</span></td>
+                    <td><input type="password" class="my-input" name="mqtt-pass"></td>
+                </tr>
+                <tr>
+                    <td><span class="my-label">Client ID:</span></td>
+                    <td><input type="text" class="my-input" name="mqtt-id" placeholder="xy6020_MMMMMMMMMMMM"></td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="my-container">
+            <span>Electricity feed-in</span>
+            <table class="my-param-table">
+                <tr>
+                    <td><span class="my-label">Zero feed-in mode</span></td>
+                    <td style="width: 70%"><input type="checkbox" id="checkbox0" name="zero-feed-in" class="switch" />
+                    </td>
+                </tr>
+                <tr>
+                    <td><span class="my-label">Tasmota SMI MQTT topic:</span></td>
+                    <td><input type="text" class="my-input" name="smi-topic"></td>
+                </tr>
+                <tr>
+                    <td><span class="my-label">Smart meter name:</span></td>
+                    <td><input type="text" class="my-input" name="sm-name"></td>
+                </tr>
+            </table>
+        </div>
+        <div class="my-container">
+            <span>Input voltage limits</span>
+            <table class="my-param-table">
+                <tr>
+                    <td><span class="my-label">Enable limits</span></td>
+                    <td style="width: 70%"><input type="checkbox" id="checkbox0" name="enable-input-limits"
+                            class="switch" />
+                    </td>
+                </tr>
+                <tr>
+                    <td><span class="my-label">Switch off lower voltage:</span></td>
+                    <td><input type="number" class="my-input" name="switch-off-voltage">
+                    </td>
+                </tr>
+                <tr>
+                    <td><span class="my-label">Switch on over voltage:</span></td>
+                    <td><input type="text" class="my-input" name="switch-on-voltage"></td>
+                </tr>
+            </table>
+        </div>
+
+        <br>
+        <br>
+        <br>
+
+        <div style="width: 60%; margin:0px; padding: 0px;">
+            <button class=" my-button small" id="back-button" onclick="goBack()">Back</button>
+            <button class=" my-button small" id="apply-button" onclick="applySettings()">Apply</button>
+            <button class=" my-button small" id="reset-button" onclick="resetEsp()">Reboot</button>
+        </div>
+    </center>
+
+</body>
+
+</html>

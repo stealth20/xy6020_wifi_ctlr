@@ -1,0 +1,204 @@
+body {
+    background-color: #272624;
+    color: white;
+}
+
+.my-label {
+    align-items: left;
+    color: inherit;
+    display: flex;
+    font-size: 1rem;
+    font-weight: bold;
+    min-width: 0px;
+    padding-bottom: 0.25rem;
+    padding-top: 0.25rem;
+    font-size: 20px;
+    vertical-align: middle;
+    margin: 10px;
+}
+
+.my-input {
+    background-color: #363f4f;
+    border-color: transparent;
+    border-style: solid;
+    border-width: 0.125rem;
+    border-radius: 0.5rem;
+    box-sizing: border-box;
+    color: inherit;
+    display: block;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: normal;
+    line-height: inherit;
+    margin: 3px;
+    margin-left: 10px;
+    min-width: 0px;
+    outline: 0px;
+    padding: 0.05rem 0.5rem;
+    width: 100%;
+}
+
+.my-input:focus {
+    border-color: #1c76fd;
+}
+
+.switch {
+    appearance: none;
+    box-sizing: border-box;
+    color: #1c76fd;
+    cursor: pointer;
+    display: inline-block;
+    height: 1.25rem;
+    position: relative;
+    width: 2rem;
+}
+
+.switch:after {
+    background-color: #fff;
+    border-radius: 100%;
+    content: '';
+    display: block;
+    height: 0.875rem;
+    left: 0.1875rem;
+    position: absolute;
+    top: 0.1875rem;
+    transition: left 0.3s ease;
+    width: 0.875rem;
+    z-index: 2;
+}
+
+.switch:before {
+    background-color: #363f4f;
+    border-radius: 2rem;
+    content: '';
+    display: block;
+    height: 100%;
+    left: 0px;
+    position: absolute;
+    top: 0px;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    z-index: 1;
+}
+
+.switch:checked:after {
+    left: 1rem;
+}
+
+.switch:checked:before {
+    background-color: currentColor;
+}
+
+.my-button a {
+    color: white;
+    text-decoration: none;
+    text-decoration-color: red;
+
+}
+
+.my-container {
+    width: 50%;
+    display: inline-block;
+    border: 2px solid grey;
+    border-radius: 10px;
+    margin: 3px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 15px;
+    padding-top: 0px;
+}
+
+.my-param-table {
+    width: 100%;
+}
+
+.my-container>span:first-child {
+    color: #ccc;
+    display: block;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    margin-bottom: 30px;
+    margin-left: -15px;
+    margin-right: -15px;
+    padding-left: 10px;
+    background-color: #5b5e55;
+    text-align: left;
+    font-weight: bold;
+    font-size: 32px;
+}
+
+.small-button:hover {
+    background-color: #2d2f2d;
+    font-weight: bold;
+}
+
+.small-button {
+    background-color: #1d1f1d;
+    border: none;
+    border-radius: 7px;
+    color: white;
+    padding: 10px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 15px;
+}
+
+.my-button.small {
+    width: 320px;
+}
+
+.my-button {
+    width: 413px;
+    background-color: #383b38;
+    border: none;
+    border-radius: 7px;
+    color: white;
+    padding: 20px 120px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.my-active-button:hover {
+    background-color: #5c665c !important;
+}
+
+.my-button:hover {
+    background-color: #2d2f2d;
+}
+
+.my-active-button {
+    background-color: #869486;
+}
+
+.segment-label {
+    font-size: 28px;
+    font-weight: bold;
+    position: relative;
+    bottom: 3px;
+}
+
+.unit {
+    font-size: 40px;
+}
+
+.description {
+    color: gray;
+    text-align: right;
+    padding-right: 15px;
+}
+
+.colored-voltage {
+    color: #a0a0ff;
+}
+
+.colored-current {
+    color: #ffa0a0;
+}
+
+.colored-power {
+    color: #a0ffa0;
+}
