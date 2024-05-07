@@ -33,20 +33,21 @@ void MqttClient::topicCallback(char *topic, byte *payload,
   Serial.print(topic);
   Serial.println("] ");
   Serial.print("   :");
-  String sensor_name = mCfg.sm_name;
-  if (String(topic) == mCfg.smi_topic) {
+  if (String(topic) == mCfg.smi_topic && mCfg.zero_feed_in) {
+    String sensor_name = mCfg.sm_name;
     JsonDocument doc;
     deserializeJson(doc, payload);
     if (doc.containsKey(sensor_name)) {
       auto sensor = doc[sensor_name];
       if (sensor.containsKey("Power")) {
         float power_value = sensor["Power"];
-        if (power_value > 0 && mCfg.zero_feed_in) {
+        power_value += mXy.actualPower();
+        if (power_value > 0) {
           if (power_value > mCfg.max_power) {
             power_value = mCfg.max_power;
           }
           Serial.printf_P("Adjust power value to %0.1f\n", power_value);
-          mXy.setMaxPower(power_value);
+          mXy.setPower(power_value);
         }
       }
     }

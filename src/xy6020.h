@@ -4,8 +4,6 @@
 #include <ModbusRTU.h>
 #include <SoftwareSerial.h>
 
-#define MAX_REGISTER_COUNT 19
-
 class Xy6020 {
 protected:
   enum Register {
@@ -15,24 +13,45 @@ protected:
     ActualCurrent,
     ActualPower,
     InputVoltage,
-    OutputCharge,
+    OutputCharge, // mAh
     OutputChargeHigh,
-    OutputEnergy,
+    OutputEnergy, // mWh
     OutputEnergyHigh,
     OnTimeHours,
     OnTimeMinutes,
     OnTimeSeconds,
-    Temperature = 13,
-    OutputState = 18
+    InternalTemperature,
+    ExtenalTemperature,
+    KeyLock,
+    ProtectionStatus,
+    CvCcState,
+    OutputState = 18,
+    TemperatureUnit, // F-C
+    BacklightBrightness,
+    OffScreenTime,
+    Model,
+    FirmwareVersion,
+    SlaveAddress,
+    Baudrate, // 6 => 115200
+    InternalTemperatureOffset,
+    ExternalTemperatureOffset,
+    Buzzer,
+    ExtractMemory,
+    // DeviceStatus,
+    Xy6020RegistersMax
   };
+
+  static const uint8_t READ_RESULTS_BUFFER_SIZE = 4;
 
   uint8_t mSlaveAddr;
   SoftwareSerial mSoftSerial;
   ModbusRTU mModBus;
-  uint16_t mRegisters[MAX_REGISTER_COUNT];
+  uint16_t mRegisters[Xy6020RegistersMax];
   bool mConnectionStatus;
   SettingsData &mCfg;
   unsigned long mTs;
+  bool mReadResults[READ_RESULTS_BUFFER_SIZE];
+  uint8_t mReadResultCounter;
 
   bool readHregCb(Modbus::ResultCode event, uint16_t transactionId, void *data);
   bool writeCb(Modbus::ResultCode event, uint16_t transactionId, void *data);
@@ -57,7 +76,8 @@ public:
   float actualPower() { return mRegisters[ActualPower] / 10.0; }
 
   float targetVoltage() { return mRegisters[TargetVoltage] / 100.0; }
-  float targetCurrent() { return mRegisters[MaxCurrent] / 100.0; }
+  float maxCurrent() { return mRegisters[MaxCurrent] / 100.0; }
+  bool setPower(float power);
   bool setMaxPower(float power);
   float maxPower() { return mCfg.max_power; }
 

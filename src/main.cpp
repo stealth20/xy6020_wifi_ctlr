@@ -12,8 +12,11 @@
 #define XY_RX_PIN 4
 #define XY_TX_PIN 5
 
+//#define USE_BUTTON_CTRL
+
 #include <ESP_MultiResetDetector.h>
 
+#include "buttonctrl.h"
 #include "mqttclient.h"
 #include "settings.h"
 #include "webserver.h"
@@ -28,6 +31,9 @@ Xy6020 xy(cfg, XY_RX_PIN, XY_TX_PIN);
 WebServer webserver(&xy, settings);
 MqttClient mqtt(xy, cfg);
 MultiResetDetector mrd(MRD_TIMEOUT, MRD_ADDRESS);
+#ifdef USE_BUTTON_CTRL
+ButtonCtrl buttons(xy);
+#endif
 
 void setup() {
   Serial.begin(115200);
@@ -55,7 +61,9 @@ void setup() {
 
   webserver.init(admin_mode);
   mqtt.init(admin_mode);
-
+#ifdef USE_BUTTON_CTRL
+  buttons.init();
+#endif
   ts = millis();
 }
 
@@ -64,4 +72,7 @@ void loop() {
   mqtt.task();
   mrd.loop();
   xy.task();
+#ifdef USE_BUTTON_CTRL
+  buttons.task();
+#endif
 }

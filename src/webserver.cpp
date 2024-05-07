@@ -202,7 +202,7 @@ void WebServer::handleControlGet() {
           "\"connected\": %d"
           "}",
           mXy->actualVoltage(), mXy->actualCurrent(), mXy->actualPower(),
-          mXy->outputEnabled(), mXy->targetVoltage(), mXy->targetCurrent(),
+          mXy->outputEnabled(), mXy->targetVoltage(), mXy->maxCurrent(),
           mXy->maxPower(), mXy->inputVoltage(), mXy->isConnected());
   mWebServer.sendHeader("Access-Control-Allow-Origin", "*");
   mWebServer.send(200, "application/json", str);

@@ -4,7 +4,11 @@
 Xy6020::Xy6020(SettingsData &cfg, int8_t rx_pin, int8_t tx_pin,
                uint8_t slave_address)
     : mSlaveAddr(slave_address), mSoftSerial(rx_pin, tx_pin),
-      mConnectionStatus(false), mCfg(cfg) {
+      mConnectionStatus(false), mCfg(cfg), mReadResultCounter(0) {
+  for (int b = 0; b < READ_RESULTS_BUFFER_SIZE; ++b) {
+    mReadResults[b] = false;
+  }
+
   // Modbus init
   mSoftSerial.begin(115200, SWSERIAL_8N1);
   mSoftSerial.setTimeout(100);
@@ -13,19 +17,46 @@ Xy6020::Xy6020(SettingsData &cfg, int8_t rx_pin, int8_t tx_pin,
   mTs = millis();
 }
 
+bool Xy6020::readHregCb(Modbus::ResultCode event, uint16_t transactionId,
+                        void *data) {
+  mReadResults[mReadResultCounter % READ_RESULTS_BUFFER_SIZE] =
+      (event == Modbus::EX_SUCCESS);
+
+  mConnectionStatus = false;
+  for (int b = 0; b < READ_RESULTS_BUFFER_SIZE; ++b) {
+    if (mReadResults[b]) {
+      mConnectionStatus = true;
+      break;
+    }
+  }
+  // Serial.printf_P("HReg read: 0x%02X, Mem: %d\n", event, ESP.getFreeHeap());
+  //  delay(50);
+  yield();
+
+  return true;
+}
+
+bool Xy6020::writeCb(Modbus::ResultCode event, uint16_t transactionId,
+                     void *data) {
+  Serial.printf_P("Request result: 0x%02X, Mem: %d\n", event,
+                  ESP.getFreeHeap());
+  return true;
+}
+
 void Xy6020::task() {
-  if (millis() > mTs + 333) {
+  if (millis() > mTs + 500) {
     mTs = millis();
     if (!mModBus.slave()) {
-      mModBus.readHreg(mSlaveAddr, 0x0, mRegisters, MAX_REGISTER_COUNT,
+      mModBus.readHreg(mSlaveAddr, 0x0, mRegisters, OutputState + 1,
                        std::bind(&Xy6020::readHregCb, this,
                                  std::placeholders::_1, std::placeholders::_2,
                                  std::placeholders::_3));
     }
+    // for (int r = 0; r < Xy6020RegistersMax; ++r) {
+    // Serial.printf_P("%02X: %d\n", r, mRegisters[r]);
+    //}
   }
 
-  mModBus.task();
-  yield();
   mModBus.task();
   yield();
 
@@ -70,45 +101,37 @@ bool Xy6020::setMaxCurrent(float current) {
   setRegister(MaxCurrent, value);
   return ret;
 }
-
-bool Xy6020::setMaxPower(float power) {
-  if (power < 0) {
-    return false;
-  }
-  mCfg.max_power = power;
+bool Xy6020::setPower(float power) {
   auto max_voltage = targetVoltage();
   if (max_voltage <= 0) {
     return false;
   }
-  auto target_current = mCfg.max_power / max_voltage;
+  if (power > mCfg.max_power) {
+    power = mCfg.max_power;
+  }
+  auto target_current = power / max_voltage;
   if (target_current > 20) {
     target_current = 20;
   }
   setMaxCurrent(target_current);
   return true;
 }
+bool Xy6020::setMaxPower(float power) {
+  if (power < 0) {
+    return false;
+  }
+  bool need_correction = false;
+  if (power < mCfg.max_power) {
+    need_correction = true;
+  }
+  mCfg.max_power = power;
+  if (need_correction) {
+    return setPower(power);
+  }
+  return true;
+}
 
 void Xy6020::setOutputEnabled(bool state) { setRegister(OutputState, state); }
-
-bool Xy6020::readHregCb(Modbus::ResultCode event, uint16_t transactionId,
-                        void *data) {
-  mConnectionStatus = (event == 0);
-  Serial.printf_P("HReg read: 0x%02X, Mem: %d\n", event, ESP.getFreeHeap());
-  for (int i = 0; i < 6; ++i) {
-    // Serial.printf_P("%d: %d\n", i, mRegisters[i]);
-  }
-  delay(50);
-  yield();
-
-  return true;
-}
-
-bool Xy6020::writeCb(Modbus::ResultCode event, uint16_t transactionId,
-                     void *data) {
-  Serial.printf_P("Request result: 0x%02X, Mem: %d\n", event,
-                  ESP.getFreeHeap());
-  return true;
-}
 
 void Xy6020::waitForTransactionDone() {
   while (mModBus.slave()) { // Check if transaction is active
