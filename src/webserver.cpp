@@ -16,11 +16,15 @@ void WebServer::init(bool admin_mode) {
   Serial.println(WiFi.localIP());
 
   mWebServer.on("/style.css", std::bind(&WebServer::handleStyleCss, this));
+#ifndef ALLOW_PERMANENT_ADMIN_MODE
   if (admin_mode) {
     mWebServer.on("/", std::bind(&WebServer::handleSettings, this));
   } else {
+#endif
     mWebServer.on("/", std::bind(&WebServer::handleRoot, this));
+#ifndef ALLOW_PERMANENT_ADMIN_MODE
   }
+#endif
   mWebServer.on("/settings.html", std::bind(&WebServer::handleSettings, this));
   mWebServer.on("/logic.js", std::bind(&WebServer::handleLogicJs, this));
   mWebServer.on("/segment-display.js",

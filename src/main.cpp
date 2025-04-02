@@ -13,6 +13,7 @@
 #define XY_TX_PIN 5
 
 //#define USE_BUTTON_CTRL
+//#define ALLOW_PERMANENT_ADMIN_MODE
 
 #include <ESP_MultiResetDetector.h>
 
